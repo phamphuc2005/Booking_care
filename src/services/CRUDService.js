@@ -89,9 +89,6 @@ let updateUserData = (data) => {
             } else {
                 resolve();
             }
-            // await db.User.update({
-
-            // })
         } catch (error) {
             reject(error);
         }
