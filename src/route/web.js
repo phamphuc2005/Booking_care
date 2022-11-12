@@ -23,9 +23,11 @@ let initWebRoutes = (app) => {
     router.delete("/api/delete-user", userController.handleDeleteUser);
 
     router.get('/api/allcode', userController.getAllCode);
+
     router.get('/api/top-doctor-home', doctorController.getTopDoctorHome);
     router.get('/api/get-all-doctors', doctorController.getAllDoctors);
     router.post('/api/save-info-doctor', doctorController.postInfoDoctor);
+    router.get('/api/get-detail-doctor-by-Id', doctorController.getDetailDoctorById);
 
     return app.use("/", router);
 };
