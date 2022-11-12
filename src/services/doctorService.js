@@ -85,15 +85,19 @@ let getDetailDoctorById = (inputId) => {
                 let data = await db.User.findOne({
                     where: { id: inputId},
                     attributes: {
-                        exclude: ['password', 'image']
+                        exclude: ['password']
                     },
                     include: [
                         {model: db.Markdown},
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']}
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true
                 })
+                if(data && data.image){
+                    data.image = new Buffer(data.image, 'base64').toString('binary');
+                }
+                if(!data) data = {};
                 resolve({
                     errCode: 0,
                     data: data
