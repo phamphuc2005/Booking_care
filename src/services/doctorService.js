@@ -1,4 +1,8 @@
 const db = require('../models/index');
+require('dotenv').config();
+const _ = require ('lodash'); 
+
+const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
 let getTopDoctorHome = (limitInput) => {
     return new Promise(async(resolve, reject) => {
@@ -124,9 +128,61 @@ let getDetailDoctorById = (inputId) => {
     })
 }
 
+let createScheduleDoctor = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.arrSchedule || !data.doctorId || !data.date) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let schedule = data.arrSchedule;
+                if(schedule && schedule.length>0) {
+                    schedule = schedule.map(item=>{
+                        item.maxNumber = MAX_NUMBER_SCHEDULE;
+                        return item;
+                    })
+                }
+                // console.log('data:',schedule);
+
+                let existing = await db.Schedule.findAll(
+                    {
+                        where: {doctorId: data.doctorId, date: data.date},
+                        attributes:['timeType', 'date', 'doctorId', 'maxNumber'],
+                        raw: true
+                    }
+                );
+                if(existing && existing.length>0) {
+                    existing = existing.map(item=>{
+                        item.date = new Date(item.date).getTime();
+                        return item;
+                    })
+                }
+                let toCreate = _.differenceWith(schedule, existing, (a, b)=>{
+                    return a.timeType === b.timeType && a.date === b.date;
+                });
+                if(toCreate && toCreate.length > 0) {
+                    await db.Schedule.bulkCreate(toCreate)
+
+                }
+                console.log(toCreate)
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK'
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
     saveInfoDoctor: saveInfoDoctor,
-    getDetailDoctorById: getDetailDoctorById
+    getDetailDoctorById: getDetailDoctorById,
+    createScheduleDoctor: createScheduleDoctor
 }
