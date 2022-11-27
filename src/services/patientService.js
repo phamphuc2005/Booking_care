@@ -6,7 +6,8 @@ const mailService = require('./mailService');
 let postBooking = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!data.email || !data.doctorId || !data.date || !data.timeType) {
+            if(!data.email || !data.doctorId || !data.date || !data.timeType ||
+                !data.fullName) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameters!'
@@ -14,9 +15,10 @@ let postBooking = (data) => {
             } else {
                 await mailService.sendExampleMail({
                     receiveMail: data.email,
-                    patientName: 'Nguyen Thi B',
-                    time: '10-11h',
-                    doctorName: 'Tran Van X',
+                    patientName: data.fullName,
+                    time: data.timeString,
+                    doctorName: data.doctorName,
+                    language: data.language,
                     link: 'https://www.google.com/'
                 })
 
