@@ -1,6 +1,7 @@
 const db = require('../models/index');
 require('dotenv').config();
 const _ = require ('lodash'); 
+const mailService = require('./mailService');
 
 let postBooking = (data) => {
     return new Promise(async(resolve, reject) => {
@@ -11,6 +12,14 @@ let postBooking = (data) => {
                     errMessage: 'Missing required parameters!'
                 })
             } else {
+                await mailService.sendExampleMail({
+                    receiveMail: data.email,
+                    patientName: 'Nguyen Thi B',
+                    time: '10-11h',
+                    doctorName: 'Tran Van X',
+                    link: 'https://www.google.com/'
+                })
+
                 let user = await db.User.findOrCreate({
                     where: {email: data.email},
                     defaults: {
