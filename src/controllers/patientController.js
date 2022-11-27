@@ -1,8 +1,21 @@
 const patientService = require ('../services/patientService');
 
-let postBooking = async (req, res) => {
+let postPatientBooking = async (req, res) => {
     try {
-        let info = await patientService.postBooking(req.body);
+        let info = await patientService.postPatientBooking(req.body);
+        return res.status(200).json(info);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
+let postVerifyBooking = async (req, res) => {
+    try {
+        let info = await patientService.postVerifyBooking(req.body);
         return res.status(200).json(info);
     } catch (error) {
         console.log(error);
@@ -14,5 +27,6 @@ let postBooking = async (req, res) => {
 }
 
 module.exports = {
-    postBooking: postBooking
+    postPatientBooking: postPatientBooking,
+    postVerifyBooking: postVerifyBooking
 }

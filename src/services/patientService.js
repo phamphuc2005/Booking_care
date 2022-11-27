@@ -2,8 +2,14 @@ const db = require('../models/index');
 require('dotenv').config();
 const _ = require ('lodash'); 
 const mailService = require('./mailService');
+const { v4 : uuidv4 } = require('uuid');
 
-let postBooking = (data) => {
+let buildURLMail = (doctorId, token) => {
+    let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
+    return result;
+}
+
+let postPatientBooking = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!data.email || !data.doctorId || !data.date || !data.timeType ||
@@ -13,13 +19,14 @@ let postBooking = (data) => {
                     errMessage: 'Missing required parameters!'
                 })
             } else {
+                let token = uuidv4();
                 await mailService.sendExampleMail({
                     receiveMail: data.email,
                     patientName: data.fullName,
                     time: data.timeString,
                     doctorName: data.doctorName,
                     language: data.language,
-                    link: 'https://www.google.com/'
+                    link: buildURLMail(data.doctorId, token)
                 })
 
                 let user = await db.User.findOrCreate({
@@ -47,6 +54,7 @@ let postBooking = (data) => {
                         patient.patientId = user[0].id,
                         patient.date = data.date,
                         patient.timeType = data.timeType
+                        patient.token = token
 
                         await patient.save();
                     } else {
@@ -55,7 +63,8 @@ let postBooking = (data) => {
                             doctorId: data.doctorId,
                             patientId: user[0].id,
                             date: data.date,
-                            timeType: data.timeType
+                            timeType: data.timeType,
+                            token: token
                         });
                     }
                 }
@@ -70,6 +79,44 @@ let postBooking = (data) => {
     })
 }
 
+let postVerifyBooking = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.token || !data.doctorId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        token: data.token,
+                        statusId: 'S1'
+                    },
+                    raw: false
+                })
+                if(appointment) {
+                    appointment.statusId = 'S2';
+                    await appointment.save();
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'Appointment confirmed successfully!'
+                    })
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'The appointment is confirmed or does not exist!'
+                    })
+                }
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
-    postBooking: postBooking
+    postPatientBooking: postPatientBooking,
+    postVerifyBooking: postVerifyBooking
 }
