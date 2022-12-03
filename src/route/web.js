@@ -3,7 +3,7 @@ const homeController = require ('../controllers/homeController');
 const userController = require ('../controllers/userController');
 const doctorController = require ('../controllers/doctorController');
 const patientController = require('../controllers/patientController');
-
+const specialtyController = require('../controllers/specialtyController');
 
 let router = express.Router();
 
@@ -37,6 +37,8 @@ let initWebRoutes = (app) => {
     router.post('/api/patient-booking', patientController.postPatientBooking);
     router.post('/api/verify-booking', patientController.postVerifyBooking);
 
+    router.post('/api/create-specialty', specialtyController.createSpecialty);
+    router.get('/api/get-all-specialty', specialtyController.getAllSpecialty);
 
     return app.use("/", router);
 };
