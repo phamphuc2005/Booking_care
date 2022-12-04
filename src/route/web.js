@@ -39,6 +39,8 @@ let initWebRoutes = (app) => {
 
     router.post('/api/create-specialty', specialtyController.createSpecialty);
     router.get('/api/get-all-specialty', specialtyController.getAllSpecialty);
+    router.put("/api/edit-specialty", specialtyController.editSpecialty);
+    router.delete("/api/delete-specialty", specialtyController.deleteSpecialty);
 
     return app.use("/", router);
 };
