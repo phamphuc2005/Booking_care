@@ -16,7 +16,7 @@ module.exports = {
       },
       descriptionMarkdown: {
         type: Sequelize.TEXT
-    },
+      },
       image: {
           type: Sequelize.Sequelize.BLOB('long')
       },

@@ -4,6 +4,7 @@ const userController = require ('../controllers/userController');
 const doctorController = require ('../controllers/doctorController');
 const patientController = require('../controllers/patientController');
 const specialtyController = require('../controllers/specialtyController');
+const clinicController = require('../controllers/clinicController')
 
 let router = express.Router();
 
@@ -42,6 +43,12 @@ let initWebRoutes = (app) => {
     router.put("/api/edit-specialty", specialtyController.editSpecialty);
     router.delete("/api/delete-specialty", specialtyController.deleteSpecialty);
     router.get('/api/get-detail-specialty-by-id', specialtyController.getDetailSpecialtyById);
+
+    router.post('/api/create-clinic', clinicController.createClinic);
+    router.get('/api/get-all-clinic', clinicController.getAllClinic);
+    router.put("/api/edit-clinic", clinicController.editClinic);
+    router.delete("/api/delete-clinic", clinicController.deleteClinic);
+    router.get('/api/get-detail-clinic-by-id', clinicController.getDetailClinicById);
 
     return app.use("/", router);
 };
