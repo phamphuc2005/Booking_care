@@ -13,7 +13,7 @@ let postPatientBooking = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!data.email || !data.doctorId || !data.date || !data.timeType ||
-                !data.fullName) {
+                !data.fullName || !data.selectGender || !data.address || !data.phoneNumber) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameters!'
@@ -34,6 +34,10 @@ let postPatientBooking = (data) => {
                     defaults: {
                         email: data.email,
                         roleId: 'R2',
+                        gender: data.selectGender,
+                        address: data.address,
+                        phonenumber: data.phoneNumber,
+                        firstName: data.fullName
                     }
                 })
                 if(user && user[0]) {
