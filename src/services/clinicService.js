@@ -107,7 +107,18 @@ let editClinic = (data) => {
                                 errCode: -1,
                                 errMessage: 'Clinic has been used. Please enter another name!'
                             });
-                        }                   
+                        } else {
+                            clinic.name = data.name,
+                            clinic.address = data.address,
+                            clinic.image = data.imageBase64,
+                            clinic.descriptionHTML = data.descriptionHTML,
+                            clinic.descriptionMarkdown = data.descriptionMarkdown;
+                            await clinic.save();
+                            resolve({
+                                errCode: 0,
+                                message: 'Update clinic successfully!'
+                            });
+                        }                  
                     }
                 } else {
                     resolve({

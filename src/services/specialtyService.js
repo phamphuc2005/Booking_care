@@ -105,6 +105,16 @@ let editSpecialty = (data) => {
                                 errCode: -1,
                                 errMessage: 'Specialty has been used. Please enter another name!'
                             });
+                        } else {
+                            specialty.name = data.name,
+                            specialty.image = data.imageBase64,
+                            specialty.descriptionHTML = data.descriptionHTML,
+                            specialty.descriptionMarkdown = data.descriptionMarkdown;
+                            await specialty.save();
+                            resolve({
+                                errCode: 0,
+                                message: 'Update specialty successfully!'
+                            });
                         }                   
                     }
                 } else {
