@@ -370,10 +370,11 @@ let getListAppointment = (inputId, inputDate) => {
                     },
                     include: [
                         {model: db.User, as:'patientData', attributes: ['email', 'firstName', 'phonenumber', 'address', 'gender'],
-                        include: [
-                            {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']}
-                        ]
-                    },
+                            include: [
+                                {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']}
+                            ]
+                        },
+                        {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
                     ],
                     raw: false,
                     nest: true
