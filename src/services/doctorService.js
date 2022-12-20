@@ -1,6 +1,7 @@
 const db = require('../models/index');
 require('dotenv').config();
 const _ = require ('lodash'); 
+const mailService = require('./mailService');
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE;
 
@@ -390,6 +391,40 @@ let getListAppointment = (inputId, inputDate) => {
     })
 }
 
+let sendConfirm = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.email || !data.doctorId || !data.patientId || !data.timeType){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let appointment = await db.Booking.findOne({
+                    where: {
+                        doctorId: data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
+                        statusId: 'S2'
+                    },
+                    raw: false
+                })
+                if(appointment) {
+                    appointment.statusId = 'S3'
+                    await appointment.save()
+                }
+                await mailService.sendConfirmMail(data)
+                resolve({
+                    errCode: 0,
+                    errMessage: 'OK'
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -399,5 +434,6 @@ module.exports = {
     getDoctorScheduleByDate: getDoctorScheduleByDate,
     getMoreDoctorInfoById: getMoreDoctorInfoById,
     getProfileDoctorById: getProfileDoctorById,
-    getListAppointment: getListAppointment
+    getListAppointment: getListAppointment,
+    sendConfirm: sendConfirm
 }
