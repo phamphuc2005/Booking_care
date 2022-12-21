@@ -425,6 +425,43 @@ let sendConfirm = (data) => {
     })
 }
 
+let getListPatient = (inputId, inputDate) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!inputId || !inputDate){
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let data = await db.Booking.findAll({
+                    where: {
+                        statusId: 'S3',
+                        doctorId: inputId,
+                        date: inputDate
+                    },
+                    include: [
+                        {model: db.User, as:'patientData', attributes: ['email', 'firstName', 'phonenumber', 'address', 'gender'],
+                            include: [
+                                {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']}
+                            ]
+                        },
+                        {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -435,5 +472,6 @@ module.exports = {
     getMoreDoctorInfoById: getMoreDoctorInfoById,
     getProfileDoctorById: getProfileDoctorById,
     getListAppointment: getListAppointment,
-    sendConfirm: sendConfirm
+    sendConfirm: sendConfirm,
+    getListPatient
 }

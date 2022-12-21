@@ -132,6 +132,19 @@ let sendConfirm = async (req, res) => {
     }
 }
 
+let getListPatient = async (req, res) => {
+    try {
+        let info = await doctorService.getListPatient(req.query.doctorId, req.query.date);
+        return res.status(200).json(info);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -142,5 +155,6 @@ module.exports = {
     getMoreDoctorInfoById: getMoreDoctorInfoById,
     getProfileDoctorById: getProfileDoctorById,
     getListAppointment: getListAppointment,
-    sendConfirm: sendConfirm
+    sendConfirm: sendConfirm,
+    getListPatient
 }
