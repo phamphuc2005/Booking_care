@@ -164,33 +164,35 @@ let updateUser = (data) => {
                     errCode: 2,
                     errMessage: 'Missing required parameters!',
                 })
-            }
-            let user = await db.User.findOne({
-                where: {id: data.id},
-                raw: false
-            })
-            if(user) {
-                user.firstName = data.firstName,
-                user.lastName = data.lastName,
-                user.phonenumber = data.phonenumber,
-                user.address = data.address,
-                user.gender = data.gender,
-                user.roleId = data.roleId,
-                user.positionId = data.positionId;
-                if (data.avatar) {
-                    user.image = data.avatar
-                }
-                await user.save();
-                resolve({
-                    errCode: 0,
-                    message: 'Update user successfully!'
-                });
             } else {
-                resolve({
-                    errCode: 1,
-                    errMessage: 'User does not found!'
-                });
+                let user = await db.User.findOne({
+                    where: {id: data.id},
+                    raw: false
+                })
+                if(user) {
+                    user.firstName = data.firstName,
+                    user.lastName = data.lastName,
+                    user.phonenumber = data.phonenumber,
+                    user.address = data.address,
+                    user.gender = data.gender,
+                    user.roleId = data.roleId,
+                    user.positionId = data.positionId;
+                    if (data.avatar) {
+                        user.image = data.avatar
+                    }
+                    await user.save();
+                    resolve({
+                        errCode: 0,
+                        message: 'Update user successfully!'
+                    });
+                } else {
+                    resolve({
+                        errCode: 1,
+                        errMessage: 'User does not found!'
+                    });
+                }
             }
+            
         } catch (error) {
             reject(error);
         }

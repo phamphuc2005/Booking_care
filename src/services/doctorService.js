@@ -168,6 +168,7 @@ let getDetailDoctorById = (inputId) => {
                     include: [
                         {model: db.Markdown},
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']},
+                        {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},
                         {model: db.Doctor_Info,
                             include: [
                                 {model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi']},
@@ -462,6 +463,38 @@ let getListPatient = (inputId, inputDate) => {
     })
 }
 
+let deleteSchedule = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let schedule = await db.Schedule.findOne({
+                    where : {id: data.id},
+                })
+                if(!schedule) {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Schedule does not exist!'
+                    })
+                }
+                await db.Schedule.destroy({
+                    where : {id: data.id},
+                });
+                resolve({
+                    errCode: 0,
+                    message: 'Delete schedule successfully!'
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -473,5 +506,6 @@ module.exports = {
     getProfileDoctorById: getProfileDoctorById,
     getListAppointment: getListAppointment,
     sendConfirm: sendConfirm,
-    getListPatient
+    getListPatient,
+    deleteSchedule
 }
