@@ -120,7 +120,79 @@ let postVerifyBooking = (data) => {
     })
 }
 
+let getListSchedule = (inputId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let data = await db.Booking.findAll({
+                    where: { 
+                        patientId: inputId,
+                        statusId: 'S2'
+                    },
+                    include: [
+                        {model: db.User, as:'doctorData2', attributes: ['firstName', 'lastName'],
+                        include: [{model: db.Doctor_Info}]
+                    },
+                        {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+             
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let getHistory = (inputId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!'
+                })
+            } else {
+                let data = await db.Booking.findAll({
+                    where: { 
+                        patientId: inputId,
+                        statusId: 'S3'
+                    },
+                    include: [
+                        {model: db.User, as:'doctorData2', attributes: ['firstName', 'lastName'],
+                        include: [{model: db.Doctor_Info}]
+                    },
+                        {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
+                    ],
+                    raw: false,
+                    nest: true
+                })
+                resolve({
+                    errCode: 0,
+                    data: data
+                })
+            }
+             
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     postPatientBooking: postPatientBooking,
-    postVerifyBooking: postVerifyBooking
+    postVerifyBooking: postVerifyBooking,
+    getListSchedule,
+    getHistory
 }
