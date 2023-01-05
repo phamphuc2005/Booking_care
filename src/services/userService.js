@@ -22,8 +22,16 @@ let handleUserLogin = (email, password) => {
             if (isExist) {
                 let user = await db.User.findOne({
                     where: {email: email},
-                    attributes: ['id', 'email', 'roleId', 'password', 'firstName', 'lastName', 'phonenumber'],
-                    raw: true
+                    // attributes: {
+                    //     exclude: ['password']
+                    // },
+                    include: [
+                        {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},
+                    ],
+                    raw: true,
+                    nest: true
+                    // attributes: ['id', 'email', 'roleId', 'password', 'firstName', 'lastName', 'phonenumber'],
+                    // raw: true
                 });
                 if (user) {
                     let check = await bcrypt.compareSync(password, user.password);
