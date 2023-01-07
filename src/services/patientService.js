@@ -105,12 +105,24 @@ let postVerifyBooking = (data) => {
                     raw: false
                 })
                 if(appointment) {
+                    let currentnumber = await db.Schedule.findOne({
+                        where: {
+                            doctorId: appointment.doctorId,
+                            date: appointment.date,
+                            timeType: appointment.timeType
+                        },
+                        raw: false
+                    })
+                    // console.log(currentnumber);
                     appointment.statusId = 'S2';
+                    currentnumber.currentNumber = currentnumber.currentNumber + 1;
                     await appointment.save();
+                    await currentnumber.save();
                     resolve({
                         errCode: 0,
                         errMessage: 'Appointment confirmed successfully!'
                     })
+                    console.log(currentnumber);
                 } else {
                     resolve({
                         errCode: 2,

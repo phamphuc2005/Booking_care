@@ -198,7 +198,7 @@ let getDetailDoctorById = (inputId) => {
 let createScheduleDoctor = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!data.arrSchedule || !data.doctorId || !data.date) {
+            if(!data.arrSchedule || !data.doctorId || !data.date || !data.maxNumber) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameters!'
@@ -207,7 +207,8 @@ let createScheduleDoctor = (data) => {
                 let schedule = data.arrSchedule;
                 if(schedule && schedule.length>0) {
                     schedule = schedule.map(item=>{
-                        item.maxNumber = MAX_NUMBER_SCHEDULE;
+                        item.maxNumber = data.maxNumber;
+                        item.currentNumber = 0;
                         return item;
                     })
                 }
