@@ -20,66 +20,96 @@ let postPatientBooking = (data) => {
                     errMessage: 'Missing required parameters!'
                 })
             } else {
-                let token = uuidv4();
-                await mailService.sendExampleMail({
-                    receiveMail: data.email,
-                    patientName: data.fullName,
-                    time: data.timeString,
-                    doctorName: data.doctorName,
-                    language: data.language,
-                    link: buildURLMail(data.doctorId, token)
-                })
-
-                let user = await db.User.findOne({
-                    where: {email: data.email},
-                    // defaults: {
-                    //     email: data.email,
-                    //     roleId: 'R2',
-                    //     gender: data.selectGender,
-                    //     address: data.address,
-                    //     phonenumber: data.phoneNumber,
-                    //     firstName: data.fullName
-                    // }
-                })
-                if(user) {
-                    let patient = await db.Booking.findOne({
-                        where: {
-                            patientId: user.id,
-                            statusId: 'S1'
-                        },
-                        raw: false
-                        // defaults: {
-                        //     statusId: 'S1',
-                        //     doctorId: data.doctorId,
-                        //     patientId: user[0].id,
-                        //     date: data.date,
-                        //     timeType: data.timeType
-                        // }
-                    })
-                    if(patient) {
-                        patient.statusId = 'S1',
-                        patient.doctorId = data.doctorId,
-                        patient.patientId = user.id,
-                        patient.date = data.date,
-                        patient.timeType = data.timeType
-                        patient.token = token
-
-                        await patient.save();
-                    } else {
-                        await db.Booking.create({
-                            statusId: 'S1',
-                            doctorId: data.doctorId,
-                            patientId: user.id,
-                            date: data.date,
-                            timeType: data.timeType,
-                            token: token
-                        });
+                let booked = await db.Booking.findOne({
+                    where: {
+                        patientId : data.patientId,
+                        date: data.date,
+                        timeType: data.timeType,
+                        statusId: 'S2'
                     }
-                }
-                resolve({
-                    errCode: 0,
-                    errMessage: 'Save patient successfully!'
                 })
+                if(booked){
+                    resolve({
+                        errCode: 11,
+                        errMessage: 'Bạn đã đặt lịch khác vào thời gian này !'
+                    })
+                } else {
+                    let doctor = await db.Booking.findOne({
+                        where: {
+                            patientId: data.patientId,
+                            date: data.date,
+                            doctorId: data.doctorId,
+                            statusId: 'S2'
+                        }
+                    })
+                    if(doctor){
+                        resolve({
+                            errCode: 12,
+                            errMessage: 'Bạn đã đặt lịch khác của bác sĩ trong ngày !'
+                        })
+                    } else {
+                        let token = uuidv4();
+                        await mailService.sendExampleMail({
+                            receiveMail: data.email,
+                            patientName: data.fullName,
+                            time: data.timeString,
+                            doctorName: data.doctorName,
+                            language: data.language,
+                            link: buildURLMail(data.doctorId, token)
+                        })
+
+                        let user = await db.User.findOne({
+                            where: {email: data.email},
+                            // defaults: {
+                            //     email: data.email,
+                            //     roleId: 'R2',
+                            //     gender: data.selectGender,
+                            //     address: data.address,
+                            //     phonenumber: data.phoneNumber,
+                            //     firstName: data.fullName
+                            // }
+                        })
+                        if(user) {
+                            let patient = await db.Booking.findOne({
+                                where: {
+                                    patientId: user.id,
+                                    statusId: 'S1'
+                                },
+                                raw: false
+                                // defaults: {
+                                //     statusId: 'S1',
+                                //     doctorId: data.doctorId,
+                                //     patientId: user[0].id,
+                                //     date: data.date,
+                                //     timeType: data.timeType
+                                // }
+                            })
+                            if(patient) {
+                                patient.statusId = 'S1',
+                                patient.doctorId = data.doctorId,
+                                patient.patientId = user.id,
+                                patient.date = data.date,
+                                patient.timeType = data.timeType
+                                patient.token = token
+
+                                await patient.save();
+                            } else {
+                                await db.Booking.create({
+                                    statusId: 'S1',
+                                    doctorId: data.doctorId,
+                                    patientId: user.id,
+                                    date: data.date,
+                                    timeType: data.timeType,
+                                    token: token
+                                });
+                            }
+                        }
+                        resolve({
+                            errCode: 0,
+                            errMessage: 'Save patient successfully!'
+                        })
+                    }
+                }      
             }
         } catch (error) {
             reject(error)
@@ -146,6 +176,7 @@ let getListSchedule = (inputId) => {
                 })
             } else {
                 let data = await db.Booking.findAll({
+                    order: [['id', 'ASC']],
                     where: { 
                         patientId: inputId,
                         statusId: 'S2'
@@ -181,6 +212,7 @@ let getHistory = (inputId) => {
                 })
             } else {
                 let data = await db.Booking.findAll({
+                    order: [['id', 'ASC']],
                     where: { 
                         patientId: inputId,
                         statusId: 'S3'
@@ -206,9 +238,53 @@ let getHistory = (inputId) => {
     })
 }
 
+let cancelAppointment = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let appointment = await db.Booking.findOne({
+                    where: {id: data.id},
+                    raw: false
+                })
+                if(appointment) {
+                    let schedule = await db.Schedule.findOne({
+                        where: {
+                            date: appointment.date,
+                            timeType: appointment.timeType,
+                            doctorId: appointment.doctorId
+                        },
+                        raw: false
+                    })
+                    appointment.statusId = 'S4',
+                    schedule.currentNumber = schedule.currentNumber - 1;
+                    await appointment.save();
+                    await schedule.save();
+                    resolve({
+                        errCode: 0,
+                        message: 'Cancel appointment successfully!'
+                    });
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Appointment does not found!'
+                    });
+                }
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     postPatientBooking: postPatientBooking,
     postVerifyBooking: postVerifyBooking,
     getListSchedule,
-    getHistory
+    getHistory,
+    cancelAppointment
 }

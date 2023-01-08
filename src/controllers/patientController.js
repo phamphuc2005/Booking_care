@@ -52,9 +52,23 @@ let getHistory = async (req, res) => {
     }
 }
 
+let cancelAppointment = async (req, res) => {
+    try {
+        let appointment = await patientService.cancelAppointment(req.body);
+        return res.status(200).json(appointment);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 module.exports = {
     postPatientBooking: postPatientBooking,
     postVerifyBooking: postVerifyBooking,
     getListSchedule,
-    getHistory
+    getHistory,
+    cancelAppointment
 }
