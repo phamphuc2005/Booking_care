@@ -144,15 +144,52 @@ let postVerifyBooking = (data) => {
                         raw: false
                     })
                     // console.log(currentnumber);
-                    appointment.statusId = 'S2';
-                    currentnumber.currentNumber = currentnumber.currentNumber + 1;
-                    await appointment.save();
-                    await currentnumber.save();
-                    resolve({
-                        errCode: 0,
-                        errMessage: 'Appointment confirmed successfully!'
-                    })
-                    console.log(currentnumber);
+                    if(currentnumber.currentNumber === currentnumber.maxNumber) {
+                        resolve({
+                            errCode: 3,
+                            errMessage: 'The number of bookings is full. Thank you for your understanding!'
+                        })
+                    } else {
+                        let booked = await db.Booking.findOne({
+                            where: {
+                                patientId : appointment.patientId,
+                                date: appointment.date,
+                                timeType: appointment.timeType,
+                                statusId: 'S2'
+                            }
+                        })
+                        if(booked){
+                            resolve({
+                                errCode: 11,
+                                errMessage: 'You have already booked another appointment for this time!'
+                            })
+                        } else {
+                            let doctor = await db.Booking.findOne({
+                                where: {
+                                    patientId: appointment.patientId,
+                                    date: appointment.date,
+                                    doctorId: appointment.doctorId,
+                                    statusId: 'S2'
+                                }
+                            })
+                            if(doctor){
+                                resolve({
+                                    errCode: 12,
+                                    errMessage: "You have booked another doctor's appointment for the day!"
+                                })
+                            } else {
+                                appointment.statusId = 'S2';
+                                currentnumber.currentNumber = currentnumber.currentNumber + 1;
+                                await appointment.save();
+                                await currentnumber.save();
+                                resolve({
+                                    errCode: 0,
+                                    errMessage: 'Appointment confirmed successfully!'
+                                })
+                                console.log(currentnumber);
+                            }
+                        }
+                    }
                 } else {
                     resolve({
                         errCode: 2,

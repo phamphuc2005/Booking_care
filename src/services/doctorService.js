@@ -496,6 +496,39 @@ let deleteSchedule = (data) => {
     })
 }
 
+let confirmCancel = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let appointment = await db.Booking.findOne({
+                    where: {id: data.id},
+                    raw: false
+                })
+                if(appointment) {
+                    appointment.statusId = 'S5',
+                    await appointment.save();
+                    resolve({
+                        errCode: 0,
+                        message: 'Cancellation confirmation successful!'
+                    });
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Appointment does not found!'
+                    });
+                }
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -508,5 +541,6 @@ module.exports = {
     getListAppointment: getListAppointment,
     sendConfirm: sendConfirm,
     getListPatient,
-    deleteSchedule
+    deleteSchedule,
+    confirmCancel
 }

@@ -158,6 +158,19 @@ let handleDeleteSchedule = async (req, res) => {
     }
 }
 
+let confirmCancel = async (req, res) => {
+    try {
+        let appointment = await doctorService.confirmCancel(req.body);
+        return res.status(200).json(appointment);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 module.exports = {
     getTopDoctorHome: getTopDoctorHome,
     getAllDoctors: getAllDoctors,
@@ -170,5 +183,6 @@ module.exports = {
     getListAppointment: getListAppointment,
     sendConfirm: sendConfirm,
     getListPatient,
-    handleDeleteSchedule
+    handleDeleteSchedule,
+    confirmCancel
 }
