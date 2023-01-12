@@ -443,7 +443,7 @@ let getListPatient = (inputId, inputDate) => {
                         date: inputDate
                     },
                     include: [
-                        {model: db.User, as:'patientData', attributes: ['email', 'firstName', 'phonenumber', 'address', 'gender'],
+                        {model: db.User, as:'patientData', attributes: ['email', 'firstName', 'lastName', 'phonenumber', 'address', 'gender'],
                             include: [
                                 {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']}
                             ]
