@@ -87,6 +87,18 @@ let handleRegister = async (req, res) => {
     }
 }
 
+let handleConfirmRegister = async (req, res) => {
+    try {
+        let message = await userService.handleConfirmRegister(req.body);
+        return res.status(200).json(message);
+    } catch (error) {
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from sever'
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
@@ -94,5 +106,6 @@ module.exports = {
     handleEditUser: handleEditUser,
     handleDeleteUser: handleDeleteUser,
     getAllCode: getAllCode,
-    handleRegister
+    handleRegister,
+    handleConfirmRegister
 }

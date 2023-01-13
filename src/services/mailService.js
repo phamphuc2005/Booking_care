@@ -110,9 +110,64 @@ let getBodyHTMLMailConfirm = (dataSend) => {
     return result; 
 }
 
+let sendConfirmRegister = async (dataSend) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let transporter = nodemailer.createTransport({
+                host: "smtp.gmail.com",
+                port: 587,
+                secure: false, // true for 465, false for other ports
+                auth: {
+                user: process.env.MAIL_NAME, // generated ethereal user
+                pass: process.env.MAIL_PASSWORD, // generated ethereal password
+                },
+            });
+        
+            // send mail with defined transport object
+            let info = await transporter.sendMail({
+                from: '"Booking_care 👻" <minhpham2001bk@gmail.com>', // sender address
+                to: dataSend.email, // list of receivers
+                subject: "Thông báo yêu cầu đăng ký tài khoản", // Subject line
+                // text: "Hello world?", // plain text body
+                html: getBodyHTMLMailRegister(dataSend)
+            });
+            resolve();
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+let getBodyHTMLMailRegister = (dataSend) => {
+    // let result = '';
+    // if(dataSend.language === 'vi') {
+    let result = `
+            <h3>Xin chào!</h3>
+            <p>Bạn nhận được email này sau khi đã yêu cầu tạo tài khoản trên hệ thống Booking_Care.</p>
+            
+            <p>Mã số để xác nhận yêu cầu đăng ký tài khoản của bạn là: <b>${dataSend.random_number}</b></p>
+            
+            <div>Xin chân thành cảm ơn quý khách đã tin dùng dịch vụ của chúng tôi!</div>
+        `;
+    // }
+    // if(dataSend.language === 'en') {
+    //     result = `
+    //         <h3>Dear!</h3>
+    //         <p>You receive this email after you have requested to create an account on the Booking_Care system.</p>
+
+    //         <p>The code to confirm your account registration request is: ${dataSend.random_number}</p>
+            
+    //         <div>Thank you very much for trusting our service!</div>
+    //     `
+    // }
+    return result; 
+}
+
 module.exports = {
     sendExampleMail: sendExampleMail,
     getBodyHTMLMail: getBodyHTMLMail,
     sendConfirmMail: sendConfirmMail,
     getBodyHTMLMailConfirm: getBodyHTMLMailConfirm,
+    sendConfirmRegister: sendConfirmRegister,
+    getBodyHTMLMailRegister: getBodyHTMLMailRegister
 }

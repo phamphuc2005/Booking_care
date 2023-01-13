@@ -1,7 +1,13 @@
 const db = require('../models/index');
+const mailService = require('./mailService');
 var bcrypt = require('bcryptjs');
 
 var salt = bcrypt.genSaltSync(10);
+
+let buildRandomNumber = () => {
+    let result = `${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}${Math.floor(Math.random() * 10)}`;
+    return result;
+}
 
 let hashUserPassword = (password) => {
     return new Promise(async(resolve, reject) => {
@@ -248,6 +254,56 @@ let handleRegister = (data) => {
                         errMessage: 'Email has been used. Please enter another email !'
                     });
                 } else {
+                    let random_number = buildRandomNumber();
+                    await mailService.sendConfirmRegister({
+                        email: data.email,
+                        random_number: random_number
+                    }) 
+                    let account = await db.Register.findOne({
+                        where: {email: data.email},
+                        raw: false
+                    })
+                    if(account) {
+                        account.email = data.email;
+                        account.random_number = random_number;
+                        await account.save();
+                    } else {
+                        await db.Register.create({
+                            email: data.email,
+                            random_number: random_number,
+                        });
+                    }
+                    resolve({
+                        errCode: 0,
+                        message: 'OK'
+                    });  
+                }
+            }
+        } catch (error) {
+            reject(error);
+            console.log('----',error);
+        }
+    })
+}
+
+let handleConfirmRegister = (data) => {
+    console.log(data);
+    return new Promise(async(resolve, reject) => {
+        try {
+            if (!data.email || !data.random_number) {
+                resolve ({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters !'
+                })
+            } else {
+                let check = await db.Register.findOne({
+                    where: {
+                        email: data.email,
+                        random_number: data.random_number
+                    },
+                    raw: false
+                })
+                if(check) {
                     let hashPasswordFromBcrypt = await hashUserPassword(data.password);  
                     await db.User.create({
                         email: data.email,
@@ -260,18 +316,23 @@ let handleRegister = (data) => {
                         roleId: 'R2',
                         positionId: 'P0',
                         // image: data.avatar,
-                    })  
+                    }) 
                     resolve({
                         errCode: 0,
                         message: 'OK'
-                    });  
+                    });
+                } else {
+                    resolve ({
+                        errCode: 2,
+                        errMessage: 'Confirmation code is incorrect !'
+                    })
                 }
+
             }
         } catch (error) {
             reject(error);
         }
     })
-
 }
 
 module.exports = {
@@ -281,5 +342,6 @@ module.exports = {
     deleteUser: deleteUser,
     updateUser: updateUser,
     getAllCodeService: getAllCodeService,
-    handleRegister
+    handleRegister,
+    handleConfirmRegister
 }
