@@ -11,16 +11,31 @@ let createComment = (data) => {
                     errMessage: 'Missing required parameters!'
                 })
             } else {
-                await db.Comment.create({
-                    doctorId: +data.doctorId,
-                    userId: data.userId,
-                    date: data.date,
-                    content: data.content,
+                let check = await db.Booking.findOne({
+                    where: {
+                        patientId: data.userId,
+                        doctorId: +data.doctorId,
+                        statusId: 'S3'
+                    },
+                    raw: false
                 })
-                resolve({
-                    errCode: 0,
-                    errMessage: 'OK!'
-                })
+                if(check) {
+                    await db.Comment.create({
+                        doctorId: +data.doctorId,
+                        userId: data.userId,
+                        date: data.date,
+                        content: data.content,
+                    })
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'OK!'
+                    })
+                } else {
+                    resolve({
+                        errCode: 2,
+                        errMessage: "You haven't seen this doctor so can't review and feedback !"
+                    })
+                }
             }
         } catch (error) {
             reject(error)
@@ -28,7 +43,7 @@ let createComment = (data) => {
     })
 }
 
-let getAllComment = (inputId) => {
+let getAllComment = (inputId, order) => {
     return new Promise(async(resolve, reject) => {
         try {
             if(!inputId) {
@@ -38,7 +53,7 @@ let getAllComment = (inputId) => {
                 })
             } else {
                 let comments = await db.Comment.findAll({
-                    // order: [['id', 'ASC']],
+                    order: [['id', order]],
                     where : {doctorId: +inputId},
                     include: [
                         {model: db.User, as: 'userData', attributes: ['firstName', 'lastName', 'image']},

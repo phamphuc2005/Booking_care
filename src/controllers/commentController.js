@@ -15,7 +15,7 @@ let createComment = async (req, res) => {
 
 let getAllComment = async (req, res) => {
     try {
-        let data = await commentService.getAllComment(req.query.id);
+        let data = await commentService.getAllComment(req.query.id, req.query.order);
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);
