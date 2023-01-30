@@ -335,6 +335,45 @@ let handleConfirmRegister = (data) => {
     })
 }
 
+let handleUserInfo = (inputId) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!inputId) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let user = await db.User.findOne({
+                    where : {id: +inputId},
+                    attributes: {
+                        exclude: ['password']
+                    },
+                    include: [
+                        {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},
+                    ],
+                    raw: false,
+                    nest: true
+                });
+                if(user) {
+                    resolve({
+                        errMessage: "OK!",
+                        errCode: 0,
+                        data: user
+                    })
+                } else {
+                    resolve({
+                        errMessage: "Don't have user!",
+                        errCode: 2
+                    })
+                }
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     getAllUsers: getAllUsers,
@@ -343,5 +382,6 @@ module.exports = {
     updateUser: updateUser,
     getAllCodeService: getAllCodeService,
     handleRegister,
-    handleConfirmRegister
+    handleConfirmRegister,
+    handleUserInfo
 }

@@ -26,7 +26,7 @@ let initWebRoutes = (app) => {
     router.delete("/api/delete-user", userController.handleDeleteUser);
     router.post("/api/register", userController.handleRegister);
     router.post("/api/confirm-register", userController.handleConfirmRegister);
-
+    router.get("/api/get-user-info", userController.handleUserInfo);
 
     router.get('/api/allcode', userController.getAllCode);
 
