@@ -60,6 +60,7 @@ let postPatientBooking = (data) => {
 
                         let user = await db.User.findOne({
                             where: {email: data.email},
+                            raw: false,
                             // defaults: {
                             //     email: data.email,
                             //     roleId: 'R2',
@@ -70,6 +71,12 @@ let postPatientBooking = (data) => {
                             // }
                         })
                         if(user) {
+                            user.gender = data.selectGender,
+                            user.phonenumber = data.phoneNumber,
+                            user.address = data.address
+
+                            await user.save();
+
                             let patient = await db.Booking.findOne({
                                 where: {
                                     patientId: user.id,
@@ -106,7 +113,7 @@ let postPatientBooking = (data) => {
                         }
                         resolve({
                             errCode: 0,
-                            errMessage: 'Save patient successfully!'
+                            errMessage: 'Save patient and send mail successfully!'
                         })
                     }
                 }      
