@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Clinic_En.hasOne(models.Doctor_Info, {foreignKey: 'id'})
     }
   };
   Clinic_En.init({

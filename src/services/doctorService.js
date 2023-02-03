@@ -21,6 +21,7 @@ let getTopDoctorHome = (limitInput) => {
                     {model: db.Doctor_Info, attributes: ['specialtyId'],
                     include: [
                         {model: db.Specialty, attributes: ['name']},
+                        {model: db.Specialty_En, attributes: ['name']},
                     ]
                     },
                 ],
@@ -296,7 +297,9 @@ let getMoreDoctorInfoById = (inputId) => {
                     include: [
                         {model: db.Allcode, as: 'priceData', attributes: ['valueEn', 'valueVi']},
                         {model: db.Allcode, as: 'paymentData', attributes: ['valueEn', 'valueVi']},
-                        {model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi']}
+                        {model: db.Allcode, as: 'provinceData', attributes: ['valueEn', 'valueVi']},
+                        {model: db.Clinic, attributes: ['name']},
+                        {model: db.Clinic_En, attributes: ['name_en']},
                     ],
                     raw: false,
                     nest: true
