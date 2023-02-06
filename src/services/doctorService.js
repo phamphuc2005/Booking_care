@@ -61,7 +61,8 @@ let getAllDoctors = () => {
 let checkRequired = (inputData) => {
     let arr = ['doctorId', 'contentHTML', 'contentMarkdown', 'action', 
                 'selectedPrice', 'selectedPayment', 'selectedProvince',
-                'nameClinic', 'addressClinic', 'note', 'specialtyId'];
+                'nameClinic', 'addressClinic', 'note', 'specialtyId',
+                'contentHTML_en', 'contentMarkdown_en'];
     let isValid = true;
     let element = '';
     for(let i = 0; i<arr.length; i++) {
@@ -94,8 +95,18 @@ let saveInfoDoctor = (inputData) => {
                         description: inputData.description,
                         doctorId: inputData.doctorId
                     })
+                    await db.Markdown_En.create({
+                        contentHTML: inputData.contentHTML_en,
+                        contentMarkdown: inputData.contentMarkdown_en,
+                        description: inputData.description_en,
+                        doctorId: inputData.doctorId
+                    })
                 } else if(inputData.action === 'EDIT') {
                     let doctorMarkdown = await db.Markdown.findOne({
+                        where: {doctorId: inputData.doctorId},
+                        raw: false
+                    })
+                    let doctorMarkdown_en = await db.Markdown_En.findOne({
                         where: {doctorId: inputData.doctorId},
                         raw: false
                     })
@@ -106,6 +117,14 @@ let saveInfoDoctor = (inputData) => {
                         doctorMarkdown.updateAt = new Date();
 
                         await doctorMarkdown.save()
+                    }
+                    if(doctorMarkdown_en) {
+                        doctorMarkdown_en.contentHTML = inputData.contentHTML_en;
+                        doctorMarkdown_en.contentMarkdown = inputData.contentMarkdown_en;
+                        doctorMarkdown_en.description = inputData.description_en;
+                        doctorMarkdown_en.updateAt = new Date();
+
+                        await doctorMarkdown_en.save()
                     }
                 }
 
@@ -168,6 +187,7 @@ let getDetailDoctorById = (inputId) => {
                     },
                     include: [
                         {model: db.Markdown},
+                        {model: db.Markdown_En},
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']},
                         {model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi']},
                         {model: db.Doctor_Info,
@@ -332,6 +352,7 @@ let getProfileDoctorById = (inputId) => {
                     },
                     include: [
                         {model: db.Markdown},
+                        {model: db.Markdown_En},
                         {model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi']},
                         {model: db.Doctor_Info,
                             include: [
