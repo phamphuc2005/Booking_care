@@ -38,6 +38,9 @@ module.exports = {
       positionId: {
         type: Sequelize.STRING
       },
+      isDelete: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

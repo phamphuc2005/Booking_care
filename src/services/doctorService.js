@@ -10,7 +10,7 @@ let getTopDoctorHome = (limitInput) => {
         try {
             let users = await db.User.findAll({
                 limit: limitInput,
-                where: {roleId: 'R1'},
+                where: {roleId: 'R1', isDelete: 0},
                 order: [['createdAt', 'DESC']],
                 attributes: {
                     exclude: ['password']
@@ -42,7 +42,7 @@ let getAllDoctors = () => {
     return new Promise(async(resolve, reject) => {
         try {
             let doctors = await db.User.findAll({
-                where: {roleId: 'R1'},
+                where: {roleId: 'R1', isDelete: 0},
                 attributes: {
                     exclude: ['password', 'image']
                 },
@@ -181,7 +181,7 @@ let getDetailDoctorById = (inputId) => {
                 })
             } else {
                 let data = await db.User.findOne({
-                    where: { id: inputId},
+                    where: { id: inputId, isDelete: 0},
                     attributes: {
                         exclude: ['password']
                     },
@@ -346,7 +346,7 @@ let getProfileDoctorById = (inputId) => {
                 })
             } else {
                 let data = await db.User.findOne({
-                    where: { id: inputId},
+                    where: { id: inputId, isDelete: 0},
                     attributes: {
                         exclude: ['password']
                     },

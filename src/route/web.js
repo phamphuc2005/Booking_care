@@ -23,10 +23,12 @@ let initWebRoutes = (app) => {
     router.get("/api/get-all-users", userController.handleGetAllUsers);
     router.post("/api/create-new-user", userController.handleCreateNewUser);
     router.put("/api/edit-user", userController.handleEditUser);
-    router.delete("/api/delete-user", userController.handleDeleteUser);
+    router.put("/api/delete-user", userController.handleDeleteUser);
     router.post("/api/register", userController.handleRegister);
     router.post("/api/confirm-register", userController.handleConfirmRegister);
     router.get("/api/get-user-info", userController.handleUserInfo);
+    router.get("/api/get-trash-users", userController.handleGetTrashUsers);
+    router.put("/api/unDelete-user", userController.handleUnDeleteUser);
 
     router.get('/api/allcode', userController.getAllCode);
 

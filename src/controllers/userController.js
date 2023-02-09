@@ -52,13 +52,24 @@ let handleEditUser = async (req, res) => {
 }
 
 let handleDeleteUser = async (req, res) => {
-    if(!req.body.id) {
+    if(!req.body.data.id) {
         return res.status(200).json({
             errCode: 1,
             errMessage: 'Missing required parameters!',
         })
     }
-    let message = await userService.deleteUser(req.body.id);
+    let message = await userService.deleteUser(req.body.data.id);
+    return res.status(200).json(message);
+}
+
+let handleUnDeleteUser = async (req, res) => {
+    if(!req.body.data.id) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: 'Missing required parameters!',
+        })
+    }
+    let message = await userService.unDeleteUser(req.body.data.id);
     return res.status(200).json(message);
 }
 
@@ -112,6 +123,19 @@ let handleUserInfo = async (req, res) => {
     }
 }
 
+let handleGetTrashUsers = async (req, res) => {
+    try {
+        let data = await userService.handleGetTrashUsers();
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
@@ -121,5 +145,7 @@ module.exports = {
     getAllCode: getAllCode,
     handleRegister,
     handleConfirmRegister,
-    handleUserInfo
+    handleUserInfo,
+    handleGetTrashUsers,
+    handleUnDeleteUser
 }

@@ -27,7 +27,7 @@ let handleUserLogin = (email, password) => {
             let isExist = await checkUserEmail(email);
             if (isExist) {
                 let user = await db.User.findOne({
-                    where: {email: email},
+                    where: {email: email, isDelete: 0},
                     // attributes: {
                     //     exclude: ['password']
                     // },
@@ -89,6 +89,7 @@ let getAllUsers = (userId) => {
             let users = '';
             if(userId === 'ALL') {
                 users = await db.User.findAll({
+                    where : {isDelete: 0},
                     attributes: {
                         exclude: ['password']
                     }
@@ -96,7 +97,7 @@ let getAllUsers = (userId) => {
             } 
             if(userId && userId !== 'ALL') {
                 users = await db.User.findOne({
-                    where : {id: userId},
+                    where : {id: userId, isDelete: 0},
                     attributes: {
                         exclude: ['password']
                     }
@@ -131,6 +132,7 @@ let createNewUser = (data) => {
                     roleId: data.roleId,
                     positionId: data.positionId,
                     image: data.avatar,
+                    isDelete: 0
                 })  
                 resolve({
                     errCode: 0,
@@ -145,20 +147,55 @@ let createNewUser = (data) => {
 }
 
 let deleteUser = (userId) => {
+    // console.log(userId);
     return new Promise(async(resolve, reject) => {
         try {
             let user = await db.User.findOne({
-                where : {id: userId},
+                where : {id: userId, isDelete: 0},
+                raw: false
             })
             if(!user) {
                 resolve({
                     errCode: 2,
                     errMessage: 'User does not exist!'
                 })
+            } else {
+                user.isDelete = 1;
+                await user.save();
+                // await db.User.destroy({
+                //     where : {id: userId},
+                // });
             }
-            await db.User.destroy({
-                where : {id: userId},
-            });
+            resolve({
+                errCode: 0,
+                message: 'Delete user successfully!'
+            })
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+let unDeleteUser = (userId) => {
+    // console.log(userId);
+    return new Promise(async(resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where : {id: userId, isDelete: 1},
+                raw: false
+            })
+            if(!user) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'User does not exist!'
+                })
+            } else {
+                user.isDelete = 0;
+                await user.save();
+                // await db.User.destroy({
+                //     where : {id: userId},
+                // });
+            }
             resolve({
                 errCode: 0,
                 message: 'Delete user successfully!'
@@ -180,7 +217,7 @@ let updateUser = (data) => {
                 })
             } else {
                 let user = await db.User.findOne({
-                    where: {id: data.id},
+                    where: {id: data.id, isDelete: 0},
                     raw: false
                 })
                 if(user) {
@@ -316,6 +353,7 @@ let handleConfirmRegister = (data) => {
                         roleId: 'R2',
                         positionId: 'P0',
                         // image: data.avatar,
+                        isDelete: 0
                     }) 
                     resolve({
                         errCode: 0,
@@ -345,7 +383,7 @@ let handleUserInfo = (inputId) => {
                 })
             } else {
                 let user = await db.User.findOne({
-                    where : {id: +inputId},
+                    where : {id: +inputId, isDelete: 0},
                     attributes: {
                         exclude: ['password']
                     },
@@ -374,6 +412,26 @@ let handleUserInfo = (inputId) => {
     })
 }
 
+let handleGetTrashUsers = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let data = await db.User.findAll({
+                where: {isDelete: 1},
+                attributes: {
+                    exclude: ['password']
+                }
+            });
+            resolve({
+                errMessage: "OK!",
+                errCode: 0,
+                data
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     getAllUsers: getAllUsers,
@@ -383,5 +441,7 @@ module.exports = {
     getAllCodeService: getAllCodeService,
     handleRegister,
     handleConfirmRegister,
-    handleUserInfo
+    handleUserInfo,
+    handleGetTrashUsers,
+    unDeleteUser
 }

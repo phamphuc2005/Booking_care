@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     image: DataTypes.STRING,
     roleId: DataTypes.STRING,
     positionId: DataTypes.STRING,
+    isDelete: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'User',
