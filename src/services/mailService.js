@@ -16,7 +16,7 @@ let sendExampleMail = async (dataSend) => {
 
     // send mail with defined transport object
     let info = await transporter.sendMail({
-        from: '"Booking_care 👻" <minhpham2001bk@gmail.com>', // sender address
+        from: '"Booking_Health 👻" <minhpham2001bk@gmail.com>', // sender address
         to: dataSend.receiveMail, // list of receivers
         subject: "Thông tin đặt lịch khám bệnh", // Subject line
         // text: "Hello world?", // plain text body
@@ -29,7 +29,7 @@ let getBodyHTMLMail = (dataSend) => {
     if(dataSend.language === 'vi') {
         result = `
             <h3>Xin chào, ${dataSend.patientName}!</h3>
-            <p>Bạn nhận được email này sau khi đặt lịch khám bệnh online trên hệ thống Booking_Care.</p>
+            <p>Bạn nhận được email này sau khi đặt lịch khám bệnh online trên hệ thống Booking_Health.</p>
             <p>Thông tin đặt lịch khám bệnh:</p>
             <div><b>Thời gian: ${dataSend.time}</b></div>
             <div><b>Bác sĩ: ${dataSend.doctorName}</b></div>
@@ -42,7 +42,7 @@ let getBodyHTMLMail = (dataSend) => {
     if(dataSend.language === 'en') {
         result = `
             <h3>Dear, ${dataSend.patientName}!</h3>
-            <p>You received this email after booking an online medical appointment on Booking_Care.</p>
+            <p>You received this email after booking an online medical appointment on Booking_Health.</p>
             <p>Information to schedule an appointment:</p>
             <div><b>Time: ${dataSend.time}</b></div>
             <div><b>Doctor: ${dataSend.doctorName}</b></div>
@@ -69,7 +69,7 @@ let sendConfirmMail = async (dataSend) => {
         
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: '"Booking_care 👻" <minhpham2001bk@gmail.com>', // sender address
+                from: '"Booking_Health 👻" <minhpham2001bk@gmail.com>', // sender address
                 to: dataSend.email, // list of receivers
                 subject: "Kết quả khám bệnh", // Subject line
                 // text: "Hello world?", // plain text body
@@ -92,7 +92,7 @@ let getBodyHTMLMailConfirm = (dataSend) => {
     if(dataSend.language === 'vi') {
         result = `
             <h3>Xin chào, ${dataSend.patientName}!</h3>
-            <p>Bạn nhận được email này sau khi đặt lịch khám bệnh online trên hệ thống Booking_Care và đã khám thành công.</p>
+            <p>Bạn nhận được email này sau khi đặt lịch khám bệnh online trên hệ thống Booking_Health và đã khám thành công.</p>
             <p>Thông tin đơn thuốc/hóa đơn được đính kèm trong file bên dưới.</p>
             
             <div>Xin chân thành cảm ơn quý khách đã sử dụng dịch vụ của chúng tôi!</div>
@@ -101,7 +101,7 @@ let getBodyHTMLMailConfirm = (dataSend) => {
     if(dataSend.language === 'en') {
         result = `
             <h3>Dear, ${dataSend.patientName}!</h3>
-            <p>You received this email after booking an online medical appointment on Booking_Care system and successfully examined.</p>
+            <p>You received this email after booking an online medical appointment on Booking_Health system and successfully examined.</p>
             <p>Prescription/invoice information is attached in the file below.</p>
             
             <div>Thank you very much for using our service!</div>
@@ -125,7 +125,7 @@ let sendConfirmRegister = async (dataSend) => {
         
             // send mail with defined transport object
             let info = await transporter.sendMail({
-                from: '"Booking_care 👻" <minhpham2001bk@gmail.com>', // sender address
+                from: '"Booking_Health 👻" <minhpham2001bk@gmail.com>', // sender address
                 to: dataSend.email, // list of receivers
                 subject: "Thông báo yêu cầu đăng ký tài khoản", // Subject line
                 // text: "Hello world?", // plain text body
@@ -143,7 +143,7 @@ let getBodyHTMLMailRegister = (dataSend) => {
     // if(dataSend.language === 'vi') {
     let result = `
             <h3>Xin chào!</h3>
-            <p>Bạn nhận được email này sau khi đã yêu cầu tạo tài khoản trên hệ thống Booking_Care.</p>
+            <p>Bạn nhận được email này sau khi đã yêu cầu tạo tài khoản trên hệ thống Booking_Health.</p>
             
             <p>Mã số để xác nhận yêu cầu đăng ký tài khoản của bạn là: <b>${dataSend.random_number}</b></p>
             
@@ -153,7 +153,7 @@ let getBodyHTMLMailRegister = (dataSend) => {
     // if(dataSend.language === 'en') {
     //     result = `
     //         <h3>Dear!</h3>
-    //         <p>You receive this email after you have requested to create an account on the Booking_Care system.</p>
+    //         <p>You receive this email after you have requested to create an account on the Booking_Health system.</p>
 
     //         <p>The code to confirm your account registration request is: ${dataSend.random_number}</p>
             
