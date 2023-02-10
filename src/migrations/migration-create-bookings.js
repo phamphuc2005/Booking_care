@@ -26,6 +26,9 @@ module.exports = {
       token: {
         type: Sequelize.STRING
       },
+      bill: {
+        type: Sequelize.Sequelize.BLOB('long')
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

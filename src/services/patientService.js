@@ -270,6 +270,12 @@ let getHistory = (inputId) => {
                     raw: false,
                     nest: true
                 })
+                if (data && data.length > 0) {
+                    data.map(item => {
+                        item.bill = new Buffer.from(item.bill, 'base64').toString('binary');
+                        return item;
+                    })
+                }
                 resolve({
                     errCode: 0,
                     data: data

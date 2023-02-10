@@ -420,7 +420,7 @@ let getListAppointment = (inputId, inputDate) => {
 let sendConfirm = (data) => {
     return new Promise(async(resolve, reject) => {
         try {
-            if(!data.email || !data.doctorId || !data.patientId || !data.timeType){
+            if(!data.email || !data.doctorId || !data.patientId || !data.timeType || !data.fileBase64){
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameters!'
@@ -436,7 +436,8 @@ let sendConfirm = (data) => {
                     raw: false
                 })
                 if(appointment) {
-                    appointment.statusId = 'S3'
+                    appointment.statusId = 'S3',
+                    appointment.bill = data.fileBase64
                     await appointment.save()
                 }
                 await mailService.sendConfirmMail(data)

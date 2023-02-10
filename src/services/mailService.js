@@ -75,7 +75,7 @@ let sendConfirmMail = async (dataSend) => {
                 // text: "Hello world?", // plain text body
                 html: getBodyHTMLMailConfirm(dataSend),
                 attachments: [{
-                    filename: `${dataSend.patientId}-${dataSend.patientName}.docx`,
+                    filename: `${dataSend.patientId}-${dataSend.patientName}.pdf`,
                     content: dataSend.fileBase64.split("base64,")[1],
                     encoding: 'base64'
                 }]
