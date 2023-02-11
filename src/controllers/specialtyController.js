@@ -52,9 +52,35 @@ let deleteSpecialty = async (req, res) => {
     }
 }
 
+let unDeleteSpecialty = async (req, res) => {
+    try {
+        let data = await specialtyService.unDeleteSpecialty(req.body.data);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
 let getDetailSpecialtyById = async (req, res) => {
     try {
         let data = await specialtyService.getDetailSpecialtyById(req.query.id, req.query.location);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.log(error);
+        return res.status(200).json({
+            errCode: -1,
+            errMessage: 'Error from server'
+        })
+    }
+}
+
+let handleGetTrashSpecialty = async (req, res) => {
+    try {
+        let data = await specialtyService.handleGetTrashSpecialty();
         return res.status(200).json(data);
     } catch (error) {
         console.log(error);
@@ -70,5 +96,7 @@ module.exports = {
     getAllSpecialty,
     editSpecialty,
     deleteSpecialty,
-    getDetailSpecialtyById
+    unDeleteSpecialty,
+    getDetailSpecialtyById,
+    handleGetTrashSpecialty
 }

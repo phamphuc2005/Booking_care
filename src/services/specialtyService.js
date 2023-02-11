@@ -58,7 +58,8 @@ let createSpecialty = (data) => {
                         name: data.name_vi,
                         image: data.imageBase64,
                         descriptionHTML: data.descriptionHTML_vi,
-                        descriptionMarkdown: data.descriptionMarkdown_vi
+                        descriptionMarkdown: data.descriptionMarkdown_vi,
+                        isDelete: 0
                     })
                     let specialty = await db.Specialty.findOne({
                         where: {name: data.name_vi},
@@ -71,6 +72,7 @@ let createSpecialty = (data) => {
                             descriptionHTML: data.descriptionHTML_en,
                             descriptionMarkdown: data.descriptionMarkdown_en,
                             id : specialty.id,
+                            isDelete: 0
                         })
                     }
                     resolve({
@@ -88,14 +90,18 @@ let createSpecialty = (data) => {
 let getAllSpecialty = (data_vi, data_en) => {
     return new Promise(async(resolve, reject) => {
         try {
-            let data_vi = await db.Specialty.findAll();
+            let data_vi = await db.Specialty.findAll({
+                where : {isDelete: 0}
+            });
             if (data_vi && data_vi.length > 0) {
                 data_vi.map(item => {
                     item.image = new Buffer.from(item.image, 'base64').toString('binary');
                     return item;
                 })
             }
-            let data_en = await db.Specialty_En.findAll();
+            let data_en = await db.Specialty_En.findAll({
+                where : {isDelete: 0}
+            });
             if (data_en && data_en.length > 0) {
                 data_en.map(item => {
                     item.image = new Buffer.from(item.image, 'base64').toString('binary');
@@ -198,23 +204,75 @@ let deleteSpecialty = (data) => {
                 })
             } else {
                 let specialty = await db.Specialty.findOne({
-                    where : {id: data.id},
+                    where : {id: data.id, isDelete: 0},
+                    raw: false
                 })
                 let specialty_en = await db.Specialty_En.findOne({
-                    where : {id: data.id},
+                    where : {id: data.id, isDelete: 0},
+                    raw: false
                 })
                 if(!specialty || !specialty_en) {
                     resolve({
                         errCode: 2,
                         errMessage: 'Specialty does not exist!'
                     })
+                } else {
+                    specialty.isDelete = 1;
+                    await specialty.save();
+                    specialty_en.isDelete = 1;
+                    await specialty_en.save();
                 }
-                await db.Specialty.destroy({
-                    where : {id: data.id},
-                });
-                await db.Specialty_En.destroy({
-                    where : {id: data.id},
-                });
+                // await db.Specialty.destroy({
+                //     where : {id: data.id},
+                // });
+                // await db.Specialty_En.destroy({
+                //     where : {id: data.id},
+                // });
+                resolve({
+                    errCode: 0,
+                    message: 'Delete specialty successfully!'
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let unDeleteSpecialty = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let specialty = await db.Specialty.findOne({
+                    where : {id: data.id, isDelete: 1},
+                    raw: false
+                })
+                let specialty_en = await db.Specialty_En.findOne({
+                    where : {id: data.id, isDelete: 1},
+                    raw: false
+                })
+                if(!specialty || !specialty_en) {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Specialty does not exist!'
+                    })
+                } else {
+                    specialty.isDelete = 0;
+                    await specialty.save();
+                    specialty_en.isDelete = 0;
+                    await specialty_en.save();
+                }
+                // await db.Specialty.destroy({
+                //     where : {id: data.id},
+                // });
+                // await db.Specialty_En.destroy({
+                //     where : {id: data.id},
+                // });
                 resolve({
                     errCode: 0,
                     message: 'Delete specialty successfully!'
@@ -295,10 +353,45 @@ let getDetailSpecialtyById = (inputId, location) => {
     })
 }
 
+let handleGetTrashSpecialty = (data_vi, data_en) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let data_vi = await db.Specialty.findAll({
+                where : {isDelete: 1}
+            });
+            if (data_vi && data_vi.length > 0) {
+                data_vi.map(item => {
+                    item.image = new Buffer.from(item.image, 'base64').toString('binary');
+                    return item;
+                })
+            }
+            let data_en = await db.Specialty_En.findAll({
+                where : {isDelete: 1}
+            });
+            if (data_en && data_en.length > 0) {
+                data_en.map(item => {
+                    item.image = new Buffer.from(item.image, 'base64').toString('binary');
+                    return item;
+                })
+            }
+            resolve({
+                errMessage: "OK!",
+                errCode: 0,
+                data_vi: data_vi,
+                data_en: data_en
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
 module.exports = {
     createSpecialty,
     getAllSpecialty,
     editSpecialty,
     deleteSpecialty,
-    getDetailSpecialtyById
+    unDeleteSpecialty,
+    getDetailSpecialtyById,
+    handleGetTrashSpecialty
 }

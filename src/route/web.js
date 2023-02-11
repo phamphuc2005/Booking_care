@@ -54,8 +54,10 @@ let initWebRoutes = (app) => {
 
     router.post('/api/create-specialty', specialtyController.createSpecialty);
     router.get('/api/get-all-specialty', specialtyController.getAllSpecialty);
+    router.get("/api/get-trash-specialty", specialtyController.handleGetTrashSpecialty);
     router.put("/api/edit-specialty", specialtyController.editSpecialty);
     router.delete("/api/delete-specialty", specialtyController.deleteSpecialty);
+    router.put("/api/unDelete-specialty", specialtyController.unDeleteSpecialty);
     router.get('/api/get-detail-specialty-by-id', specialtyController.getDetailSpecialtyById);
 
     router.post('/api/create-clinic', clinicController.createClinic);
