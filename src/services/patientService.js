@@ -227,7 +227,12 @@ let getListSchedule = (inputId) => {
                     },
                     include: [
                         {model: db.User, as:'doctorData2', attributes: ['firstName', 'lastName'],
-                        include: [{model: db.Doctor_Info}]
+                        include: [{model: db.Doctor_Info,
+                            include: [
+                                {model: db.Clinic, as:'Clinic'},
+                                {model: db.Clinic_En, as: 'Clinic_En'}
+                            ]
+                        }]
                     },
                         {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
                     ],
@@ -263,7 +268,14 @@ let getHistory = (inputId) => {
                     },
                     include: [
                         {model: db.User, as:'doctorData2', attributes: ['firstName', 'lastName'],
-                        include: [{model: db.Doctor_Info}]
+                        include: [
+                            {model: db.Doctor_Info,
+                                include: [
+                                    {model: db.Clinic, as:'Clinic'},
+                                    {model: db.Clinic_En, as: 'Clinic_En'}
+                                ]
+                            },
+                        ]
                     },
                         {model: db.Allcode, as:'timeTypeData2', attributes: ['valueEn', 'valueVi']}
                     ],
