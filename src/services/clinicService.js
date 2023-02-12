@@ -59,7 +59,8 @@ let createClinic = (data) => {
                         address: data.address_vi,
                         image: data.imageBase64,
                         descriptionHTML: data.descriptionHTML_vi,
-                        descriptionMarkdown: data.descriptionMarkdown_vi
+                        descriptionMarkdown: data.descriptionMarkdown_vi,
+                        isDelete: 0
                     })
                     let clinic = await db.Clinic.findOne({
                         where: {name: data.name_vi},
@@ -73,6 +74,7 @@ let createClinic = (data) => {
                             descriptionMarkdown_en: data.descriptionMarkdown_en,
                             id_en : clinic.id,
                             image_en: data.imageBase64,
+                            isDelete: 0
                         })
                     }
                     resolve({
@@ -90,14 +92,51 @@ let createClinic = (data) => {
 let getAllClinic = (data_vi, data_en) => {
     return new Promise(async(resolve, reject) => {
         try {
-            let data_vi = await db.Clinic.findAll();
+            let data_vi = await db.Clinic.findAll({
+                where : {isDelete: 0}
+            });
             if (data_vi && data_vi.length > 0) {
                 data_vi.map(item => {
                     item.image = new Buffer.from(item.image, 'base64').toString('binary');
                     return item;
                 })
             }
-            let data_en = await db.Clinic_En.findAll();
+            let data_en = await db.Clinic_En.findAll({
+                where : {isDelete: 0}
+            });
+            if (data_en && data_en.length > 0) {
+                data_en.map(item => {
+                    item.image_en = new Buffer.from(item.image_en, 'base64').toString('binary');
+                    return item;
+                })
+            }
+            resolve({
+                errMessage: "OK!",
+                errCode: 0,
+                data_vi: data_vi,
+                data_en: data_en
+            })
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let getTrashClinic = (data_vi, data_en) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            let data_vi = await db.Clinic.findAll({
+                where : {isDelete: 1}
+            });
+            if (data_vi && data_vi.length > 0) {
+                data_vi.map(item => {
+                    item.image = new Buffer.from(item.image, 'base64').toString('binary');
+                    return item;
+                })
+            }
+            let data_en = await db.Clinic_En.findAll({
+                where : {isDelete: 1}
+            });
             if (data_en && data_en.length > 0) {
                 data_en.map(item => {
                     item.image_en = new Buffer.from(item.image_en, 'base64').toString('binary');
@@ -205,23 +244,69 @@ let deleteClinic = (data) => {
                 })
             } else {
                 let clinic = await db.Clinic.findOne({
-                    where : {id: data.id},
+                    where : {id: data.id, isDelete: 0},
+                    raw: false
                 })
                 let clinic_en = await db.Clinic_En.findOne({
-                    where : {id_en: data.id},
+                    where : {id_en: data.id, isDelete: 0},
+                    raw: false
                 })
                 if(!clinic || !clinic_en) {
                     resolve({
                         errCode: 2,
                         errMessage: 'Clinic does not exist!'
                     })
+                } else {
+                    clinic.isDelete = 1;
+                    await clinic.save();
+                    clinic_en.isDelete = 1;
+                    await clinic_en.save();
                 }
-                await db.Clinic.destroy({
-                    where : {id: data.id},
-                });
-                await db.Clinic_En.destroy({
-                    where : {id_en: data.id},
-                });
+                // await db.Clinic.destroy({
+                //     where : {id: data.id},
+                // });
+                // await db.Clinic_En.destroy({
+                //     where : {id_en: data.id},
+                // });
+                resolve({
+                    errCode: 0,
+                    message: 'Delete clinic successfully!'
+                })
+            }
+        } catch (error) {
+            reject(error)
+        }
+    })
+}
+
+let unDeleteClinic = (data) => {
+    return new Promise(async(resolve, reject) => {
+        try {
+            if(!data.id) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Missing required parameters!',
+                })
+            } else {
+                let clinic = await db.Clinic.findOne({
+                    where : {id: data.id, isDelete: 1},
+                    raw: false
+                })
+                let clinic_en = await db.Clinic_En.findOne({
+                    where : {id_en: data.id, isDelete: 1},
+                    raw: false
+                })
+                if(!clinic || !clinic_en) {
+                    resolve({
+                        errCode: 2,
+                        errMessage: 'Clinic does not exist!'
+                    })
+                } else {
+                    clinic.isDelete = 0;
+                    await clinic.save();
+                    clinic_en.isDelete = 0;
+                    await clinic_en.save();
+                }
                 resolve({
                     errCode: 0,
                     message: 'Delete clinic successfully!'
@@ -244,9 +329,6 @@ let getDetailClinicById = (inputId) => {
             } else {
                 let data_vi = await db.Clinic.findOne({
                     where : {id: inputId},
-                    // attributes: {
-                    //     exclude: ['']
-                    // },
                 })
                 let data_en = await db.Clinic_En.findOne({
                     where : {id_en: inputId},
@@ -287,5 +369,7 @@ module.exports = {
     getAllClinic,
     editClinic,
     deleteClinic,
-    getDetailClinicById
+    getDetailClinicById,
+    getTrashClinic,
+    unDeleteClinic
 }

@@ -62,8 +62,10 @@ let initWebRoutes = (app) => {
 
     router.post('/api/create-clinic', clinicController.createClinic);
     router.get('/api/get-all-clinic', clinicController.getAllClinic);
+    router.get('/api/get-trash-clinic', clinicController.getTrashClinic);
     router.put("/api/edit-clinic", clinicController.editClinic);
     router.delete("/api/delete-clinic", clinicController.deleteClinic);
+    router.put("/api/unDelete-clinic", clinicController.unDeleteClinic);
     router.get('/api/get-detail-clinic-by-id', clinicController.getDetailClinicById);
 
     router.post('/api/create-comment', commentController.createComment);
