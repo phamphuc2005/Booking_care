@@ -10,7 +10,6 @@ let buildURLMail = (doctorId, token) => {
 }
 
 let postPatientBooking = (data) => {
-    console.log(data);
     return new Promise(async(resolve, reject) => {
         try {
             if(!data.email || !data.doctorId || !data.date || !data.timeType ||
@@ -150,7 +149,6 @@ let postVerifyBooking = (data) => {
                         },
                         raw: false
                     })
-                    // console.log(currentnumber);
                     if(currentnumber.currentNumber === currentnumber.maxNumber) {
                         resolve({
                             errCode: 3,
@@ -193,7 +191,6 @@ let postVerifyBooking = (data) => {
                                     errCode: 0,
                                     errMessage: 'Appointment confirmed successfully!'
                                 })
-                                console.log(currentnumber);
                             }
                         }
                     }

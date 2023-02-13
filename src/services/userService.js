@@ -147,7 +147,6 @@ let createNewUser = (data) => {
 }
 
 let deleteUser = (userId) => {
-    // console.log(userId);
     return new Promise(async(resolve, reject) => {
         try {
             let user = await db.User.findOne({
@@ -177,7 +176,6 @@ let deleteUser = (userId) => {
 }
 
 let unDeleteUser = (userId) => {
-    // console.log(userId);
     return new Promise(async(resolve, reject) => {
         try {
             let user = await db.User.findOne({
@@ -192,9 +190,6 @@ let unDeleteUser = (userId) => {
             } else {
                 user.isDelete = 0;
                 await user.save();
-                // await db.User.destroy({
-                //     where : {id: userId},
-                // });
             }
             resolve({
                 errCode: 0,
@@ -318,13 +313,11 @@ let handleRegister = (data) => {
             }
         } catch (error) {
             reject(error);
-            console.log('----',error);
         }
     })
 }
 
 let handleConfirmRegister = (data) => {
-    console.log(data);
     return new Promise(async(resolve, reject) => {
         try {
             if (!data.email || !data.random_number) {

@@ -267,12 +267,6 @@ let unDeleteSpecialty = (data) => {
                     specialty_en.isDelete = 0;
                     await specialty_en.save();
                 }
-                // await db.Specialty.destroy({
-                //     where : {id: data.id},
-                // });
-                // await db.Specialty_En.destroy({
-                //     where : {id: data.id},
-                // });
                 resolve({
                     errCode: 0,
                     message: 'Delete specialty successfully!'

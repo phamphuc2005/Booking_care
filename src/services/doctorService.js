@@ -11,7 +11,7 @@ let getTopDoctorHome = (limitInput) => {
             let users = await db.User.findAll({
                 limit: limitInput,
                 where: {roleId: 'R1', isDelete: 0},
-                order: [['createdAt', 'DESC']],
+                order: [['createdAt', 'ASC']],
                 attributes: {
                     exclude: ['password']
                 },
@@ -233,7 +233,6 @@ let createScheduleDoctor = (data) => {
                         return item;
                     })
                 }
-                // console.log('data:',schedule);
 
                 let existing = await db.Schedule.findAll(
                     {
