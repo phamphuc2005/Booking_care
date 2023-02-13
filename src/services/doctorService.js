@@ -85,7 +85,7 @@ let saveInfoDoctor = (inputData) => {
             if(checkObject.isValid === false) {
                 resolve({
                     errCode: 1,
-                    errMessage: `Missing parameters: ${checkObject.element}`
+                    errMessage: `Thiếu: ${checkObject.element}`
                 })
             } else {
                 if(inputData.action === 'CREATE') {
@@ -162,7 +162,7 @@ let saveInfoDoctor = (inputData) => {
 
                 resolve({
                     errCode: 0,
-                    errMessage: 'Save doctor info successfully!'
+                    errMessage: 'Lưu thông tin bác sĩ thành công!'
                 })
             }
         } catch (error) {
@@ -177,7 +177,7 @@ let getDetailDoctorById = (inputId) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.User.findOne({
@@ -222,7 +222,7 @@ let createScheduleDoctor = (data) => {
             if(!data.arrSchedule || !data.doctorId || !data.date || !data.maxNumber) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let schedule = data.arrSchedule;
@@ -273,7 +273,7 @@ let getDoctorScheduleByDate = (doctorId, date) => {
             if(!doctorId || !date) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Schedule.findAll({
@@ -306,7 +306,7 @@ let getMoreDoctorInfoById = (inputId) => {
             if(!inputId){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Doctor_Info.findOne({
@@ -341,7 +341,7 @@ let getProfileDoctorById = (inputId) => {
             if(!inputId){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.User.findOne({
@@ -385,7 +385,7 @@ let getListAppointment = (inputId, inputDate) => {
             if(!inputId || !inputDate){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Booking.findAll({
@@ -422,7 +422,7 @@ let sendConfirm = (data) => {
             if(!data.email || !data.doctorId || !data.patientId || !data.timeType || !data.fileBase64){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let appointment = await db.Booking.findOne({
@@ -457,7 +457,7 @@ let getListPatient = (inputId, inputDate) => {
             if(!inputId || !inputDate){
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Booking.findAll({
@@ -494,7 +494,7 @@ let deleteSchedule = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let schedule = await db.Schedule.findOne({
@@ -503,7 +503,7 @@ let deleteSchedule = (data) => {
                 if(!schedule) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Schedule does not exist!'
+                        errMessage: 'Kế hoạch không tồn tại!'
                     })
                 }
                 await db.Schedule.destroy({
@@ -511,7 +511,7 @@ let deleteSchedule = (data) => {
                 });
                 resolve({
                     errCode: 0,
-                    message: 'Delete schedule successfully!'
+                    message: 'Xóa kế hoạch thành công!'
                 })
             }
         } catch (error) {
@@ -526,7 +526,7 @@ let confirmCancel = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let appointment = await db.Booking.findOne({
@@ -538,12 +538,12 @@ let confirmCancel = (data) => {
                     await appointment.save();
                     resolve({
                         errCode: 0,
-                        message: 'Cancellation confirmation successful!'
+                        message: 'Hủy thành công!'
                     });
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Appointment does not found!'
+                        errMessage: 'Lịch hẹn không tồn tại!'
                     });
                 }
             }

@@ -16,7 +16,7 @@ let postPatientBooking = (data) => {
                 !data.fullName || !data.selectGender || !data.address || !data.phoneNumber) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let booked = await db.Booking.findOne({
@@ -112,7 +112,7 @@ let postPatientBooking = (data) => {
                         }
                         resolve({
                             errCode: 0,
-                            errMessage: 'Save patient and send mail successfully!'
+                            errMessage: 'Gửi yêu cầu đăng kí thành công!'
                         })
                     }
                 }      
@@ -129,7 +129,7 @@ let postVerifyBooking = (data) => {
             if(!data.token || !data.doctorId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let appointment = await db.Booking.findOne({
@@ -152,7 +152,7 @@ let postVerifyBooking = (data) => {
                     if(currentnumber.currentNumber === currentnumber.maxNumber) {
                         resolve({
                             errCode: 3,
-                            errMessage: 'The number of bookings is full. Thank you for your understanding!'
+                            errMessage: 'Số lương đặt lịch đã đầy. Mong bạn thông cảm!'
                         })
                     } else {
                         let booked = await db.Booking.findOne({
@@ -166,7 +166,7 @@ let postVerifyBooking = (data) => {
                         if(booked){
                             resolve({
                                 errCode: 11,
-                                errMessage: 'You have already booked another appointment for this time!'
+                                errMessage: 'Bạn đã đặt lịch khác vào thời gian này!'
                             })
                         } else {
                             let doctor = await db.Booking.findOne({
@@ -180,7 +180,7 @@ let postVerifyBooking = (data) => {
                             if(doctor){
                                 resolve({
                                     errCode: 12,
-                                    errMessage: "You have booked another doctor's appointment for the day!"
+                                    errMessage: "Bạn đã đặt lịch khác của bác sĩ trong ngày!"
                                 })
                             } else {
                                 appointment.statusId = 'S2';
@@ -189,7 +189,7 @@ let postVerifyBooking = (data) => {
                                 await currentnumber.save();
                                 resolve({
                                     errCode: 0,
-                                    errMessage: 'Appointment confirmed successfully!'
+                                    errMessage: 'Xác nhận đăng kí thành công!'
                                 })
                             }
                         }
@@ -197,7 +197,7 @@ let postVerifyBooking = (data) => {
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'The appointment is confirmed or does not exist!'
+                        errMessage: 'Lịch hẹn đã được xác nhận hoặc không tồn tại!'
                     })
                 }
             }
@@ -213,7 +213,7 @@ let getListSchedule = (inputId) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Booking.findAll({
@@ -254,7 +254,7 @@ let getHistory = (inputId) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let data = await db.Booking.findAll({
@@ -303,7 +303,7 @@ let cancelAppointment = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let appointment = await db.Booking.findOne({
@@ -325,12 +325,12 @@ let cancelAppointment = (data) => {
                     await schedule.save();
                     resolve({
                         errCode: 0,
-                        message: 'Cancel appointment successfully!'
+                        message: 'Hủy lịch hẹn thành công!'
                     });
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Appointment does not found!'
+                        errMessage: 'Lịch hẹn không tồn tại!'
                     });
                 }
             }

@@ -8,7 +8,7 @@ let createComment = (data) => {
             if(!data.userId || !data.content || !data.date || !data.doctorId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let check = await db.Booking.findOne({
@@ -33,7 +33,7 @@ let createComment = (data) => {
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: "You haven't seen this doctor so can't review and feedback !"
+                        errMessage: "Bạn chưa được bác sĩ này khám nên không thể đánh giá và phản hồi !"
                     })
                 }
             }
@@ -49,7 +49,7 @@ let getAllComment = (inputId, order) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let comments = await db.Comment.findAll({
@@ -79,7 +79,7 @@ let editComment = (data) => {
             if(!data.id || !data.content || !data.date) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let comment = await db.Comment.findOne({
@@ -92,12 +92,12 @@ let editComment = (data) => {
                     await comment.save();
                     resolve({
                         errCode: 0,
-                        message: 'Update comment successfully!'
+                        message: 'Chỉnh sửa bình luận thành công!'
                     });
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Comment does not found!'
+                        errMessage: 'Bình luận không tồn tại!'
                     });
                 }
             }
@@ -113,7 +113,7 @@ let deleteComment = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let comment = await db.Comment.findOne({
@@ -122,7 +122,7 @@ let deleteComment = (data) => {
                 if(!comment) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Comment does not exist!'
+                        errMessage: 'Bình luận không tồn tại!'
                     })
                 }
                 await db.Comment.destroy({
@@ -130,7 +130,7 @@ let deleteComment = (data) => {
                 });
                 resolve({
                     errCode: 0,
-                    message: 'Delete comment successfully!'
+                    message: 'Xóa bình luận thành công!'
                 })
             }
         } catch (error) {

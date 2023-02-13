@@ -7,7 +7,7 @@ let handleLogin = async (req, res) => {
     if(!email || !password) {
         return res.status(500).json({
             errCode: 1,
-            message: 'Missing inputs parameter!'
+            message: 'Thiếu dữ liệu!'
         })
     }
 
@@ -27,7 +27,7 @@ let handleGetAllUsers = async (req, res) => {
     if(!id) {
         return res.status(200).json({
             errCode: 1,
-            errMessage: 'Missing required parameters!',
+            errMessage: 'Thiếu dữ liệu!',
             users: []
         })
     }
@@ -55,7 +55,7 @@ let handleDeleteUser = async (req, res) => {
     if(!req.body.data.id) {
         return res.status(200).json({
             errCode: 1,
-            errMessage: 'Missing required parameters!',
+            errMessage: 'Thiếu dữ liệu!',
         })
     }
     let message = await userService.deleteUser(req.body.data.id);
@@ -66,7 +66,7 @@ let handleUnDeleteUser = async (req, res) => {
     if(!req.body.data.id) {
         return res.status(200).json({
             errCode: 1,
-            errMessage: 'Missing required parameters!',
+            errMessage: 'Thiếu dữ liệu!',
         })
     }
     let message = await userService.unDeleteUser(req.body.data.id);
@@ -81,7 +81,7 @@ let getAllCode = async (req, res) => {
         console.log(error)
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from sever'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -93,7 +93,7 @@ let handleRegister = async (req, res) => {
     } catch (error) {
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from sever'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -105,7 +105,7 @@ let handleConfirmRegister = async (req, res) => {
     } catch (error) {
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from sever'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -118,7 +118,7 @@ let handleUserInfo = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -131,7 +131,7 @@ let handleGetTrashUsers = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }

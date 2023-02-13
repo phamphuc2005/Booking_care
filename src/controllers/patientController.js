@@ -8,7 +8,7 @@ let postPatientBooking = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -21,7 +21,7 @@ let postVerifyBooking = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -34,7 +34,7 @@ let getListSchedule = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -47,7 +47,7 @@ let getHistory = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -60,7 +60,7 @@ let cancelAppointment = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }

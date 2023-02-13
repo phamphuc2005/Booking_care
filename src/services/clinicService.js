@@ -43,7 +43,7 @@ let createClinic = (data) => {
                 !data.name_en || !data.address_en || !data.descriptionHTML_en || !data.descriptionMarkdown_en) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let check = await checkClinicName(data.name_vi);
@@ -51,7 +51,7 @@ let createClinic = (data) => {
                 if(check === true && check_en === true) {
                     resolve({
                         errCode: -1,
-                        errMessage: 'Clinic has been used. Please enter another name!'
+                        errMessage: 'Tên cơ sở y tế đã được sử dụng. Vui lòng chọn tên khác!'
                     });
                 } else {
                     await db.Clinic.create({
@@ -162,7 +162,7 @@ let editClinic = (data) => {
                 !data.name_en || !data.address_en || !data.descriptionHTML_en || !data.descriptionMarkdown_en) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let clinic = await db.Clinic.findOne({
@@ -190,7 +190,7 @@ let editClinic = (data) => {
                         await clinic_en.save();
                         resolve({
                             errCode: 0,
-                            message: 'Update clinic successfully!'
+                            message: 'Cập nhật cơ sở y tế thành công!'
                         });
                     }
                      else {
@@ -199,7 +199,7 @@ let editClinic = (data) => {
                         if(check === true && check_en === true) {
                             resolve({
                                 errCode: -1,
-                                errMessage: 'Clinic has been used. Please enter another name!'
+                                errMessage: 'Tên cơ sở y tế đã được sử dụng. Vui lòng chọn tên khác!'
                             });
                         } else {
                             clinic.name = data.name_vi,
@@ -217,14 +217,14 @@ let editClinic = (data) => {
                             await clinic_en.save();
                             resolve({
                                 errCode: 0,
-                                message: 'Update clinic successfully!'
+                                message: 'Cập nhật cơ sở y tế thành công!'
                             });
                         }                  
                     }
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Clinic does not found!'
+                        errMessage: 'Cơ sở y tế không tồn tại!'
                     });
                 }
             }
@@ -240,7 +240,7 @@ let deleteClinic = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let clinic = await db.Clinic.findOne({
@@ -254,7 +254,7 @@ let deleteClinic = (data) => {
                 if(!clinic || !clinic_en) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Clinic does not exist!'
+                        errMessage: 'Cơ sở y tế không tồn tại!'
                     })
                 } else {
                     clinic.isDelete = 1;
@@ -270,7 +270,7 @@ let deleteClinic = (data) => {
                 // });
                 resolve({
                     errCode: 0,
-                    message: 'Delete clinic successfully!'
+                    message: 'Xóa cơ sở y tế thành công!'
                 })
             }
         } catch (error) {
@@ -285,7 +285,7 @@ let unDeleteClinic = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let clinic = await db.Clinic.findOne({
@@ -299,7 +299,7 @@ let unDeleteClinic = (data) => {
                 if(!clinic || !clinic_en) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Clinic does not exist!'
+                        errMessage: 'Cơ sở y tế không tồn tại!'
                     })
                 } else {
                     clinic.isDelete = 0;
@@ -309,7 +309,7 @@ let unDeleteClinic = (data) => {
                 }
                 resolve({
                     errCode: 0,
-                    message: 'Delete clinic successfully!'
+                    message: 'Khôi phục cơ sở y tế thành công!'
                 })
             }
         } catch (error) {
@@ -324,7 +324,7 @@ let getDetailClinicById = (inputId) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let data_vi = await db.Clinic.findOne({

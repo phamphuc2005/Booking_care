@@ -43,7 +43,7 @@ let createSpecialty = (data) => {
                 !data.name_en || !data.descriptionHTML_en || !data.descriptionMarkdown_en) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let check = await checkSpecialtyName(data.name_vi);
@@ -51,7 +51,7 @@ let createSpecialty = (data) => {
                 if(check === true && check_en === true) {
                     resolve({
                         errCode: -1,
-                        errMessage: 'Specialty has been used. Please enter another name!'
+                        errMessage: 'Tên chuyên khoa đã được sử dụng. Vui lòng chọn tên khác!'
                     });
                 } else {
                     await db.Specialty.create({
@@ -127,7 +127,7 @@ let editSpecialty = (data) => {
                 !data.name_en || !data.descriptionHTML_en || !data.descriptionMarkdown_en) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let specialty = await db.Specialty.findOne({
@@ -153,7 +153,7 @@ let editSpecialty = (data) => {
                         await specialty_en.save();
                         resolve({
                             errCode: 0,
-                            message: 'Update specialty successfully!'
+                            message: 'Cập nhật chuyên khoa thành công!'
                         });
                     } else {
                         let check = await checkSpecialtyName(data.name_vi);
@@ -161,7 +161,7 @@ let editSpecialty = (data) => {
                         if(check === true && check_en === true) {
                             resolve({
                                 errCode: -1,
-                                errMessage: 'Specialty has been used. Please enter another name!'
+                                errMessage: 'Tên chuyên khoa đã được sử dụng. Vui lòng chọn tên khác!'
                             });
                         } else {
                             specialty.name = data.name_vi,
@@ -177,14 +177,14 @@ let editSpecialty = (data) => {
                             await specialty_en.save();
                             resolve({
                                 errCode: 0,
-                                message: 'Update specialty successfully!'
+                                message: 'Cập nhật chuyên khoa thành công!'
                             });
                         }                   
                     }
                 } else {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Specialty does not found!'
+                        errMessage: 'Chuyên khoa không tồn tại!'
                     });
                 }
             }
@@ -200,7 +200,7 @@ let deleteSpecialty = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let specialty = await db.Specialty.findOne({
@@ -214,7 +214,7 @@ let deleteSpecialty = (data) => {
                 if(!specialty || !specialty_en) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Specialty does not exist!'
+                        errMessage: 'Chuyên khoa không tồn tại!'
                     })
                 } else {
                     specialty.isDelete = 1;
@@ -230,7 +230,7 @@ let deleteSpecialty = (data) => {
                 // });
                 resolve({
                     errCode: 0,
-                    message: 'Delete specialty successfully!'
+                    message: 'Xóa chuyên khoa thành công!'
                 })
             }
         } catch (error) {
@@ -245,7 +245,7 @@ let unDeleteSpecialty = (data) => {
             if(!data.id) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let specialty = await db.Specialty.findOne({
@@ -259,7 +259,7 @@ let unDeleteSpecialty = (data) => {
                 if(!specialty || !specialty_en) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Specialty does not exist!'
+                        errMessage: 'Chuyên khoa không tồn tại!'
                     })
                 } else {
                     specialty.isDelete = 0;
@@ -269,7 +269,7 @@ let unDeleteSpecialty = (data) => {
                 }
                 resolve({
                     errCode: 0,
-                    message: 'Delete specialty successfully!'
+                    message: 'Khôi phục chuyên khoa thành công!'
                 })
             }
         } catch (error) {
@@ -284,7 +284,7 @@ let getDetailSpecialtyById = (inputId, location) => {
             if(!inputId || !location) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let data_vi = await db.Specialty.findOne({

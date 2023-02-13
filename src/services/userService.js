@@ -48,15 +48,15 @@ let handleUserLogin = (email, password) => {
                         userData.user = user;
                     } else {
                         userData.errCode = 3;
-                        userData.errMessage = 'Wrong password!';
+                        userData.errMessage = 'Sai mật khẩu!';
                     }
                 } else {
                     userData.errCode = 2;
-                    userData.errMessage = 'User does not exist.';
+                    userData.errMessage = 'Người dùng không tồn tại!';
                 }
             } else {
                 userData.errCode = 1;
-                userData.errMessage = 'Email does not exist. Please re-enter your email';
+                userData.errMessage = 'Email đã được sử dụng. Vui lòng chọn email khác!';
             }
             resolve(userData);
         } catch (error) {
@@ -117,7 +117,7 @@ let createNewUser = (data) => {
             if(check === true) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Email has been used. Please enter another email!'
+                    errMessage: 'Email đã được sử dụng. Vui lòng chọn email khác!'
                 });
             } else {
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);  
@@ -156,7 +156,7 @@ let deleteUser = (userId) => {
             if(!user) {
                 resolve({
                     errCode: 2,
-                    errMessage: 'User does not exist!'
+                    errMessage: 'Người dùng không tồn tại!'
                 })
             } else {
                 user.isDelete = 1;
@@ -167,7 +167,7 @@ let deleteUser = (userId) => {
             }
             resolve({
                 errCode: 0,
-                message: 'Delete user successfully!'
+                message: 'Xóa người dùng thành công!'
             })
         } catch (error) {
             reject(error);
@@ -185,7 +185,7 @@ let unDeleteUser = (userId) => {
             if(!user) {
                 resolve({
                     errCode: 2,
-                    errMessage: 'User does not exist!'
+                    errMessage: 'Người dùng không tồn tại!'
                 })
             } else {
                 user.isDelete = 0;
@@ -193,7 +193,7 @@ let unDeleteUser = (userId) => {
             }
             resolve({
                 errCode: 0,
-                message: 'Delete user successfully!'
+                message: 'Khôi phục người dùng thành công!'
             })
         } catch (error) {
             reject(error);
@@ -208,7 +208,7 @@ let updateUser = (data) => {
             if(!data.id || !data.gender || !data.roleId || !data.positionId) {
                 resolve({
                     errCode: 2,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let user = await db.User.findOne({
@@ -229,12 +229,12 @@ let updateUser = (data) => {
                     await user.save();
                     resolve({
                         errCode: 0,
-                        message: 'Update user successfully!'
+                        message: 'Cập nhật người dùng thành công!'
                     });
                 } else {
                     resolve({
                         errCode: 1,
-                        errMessage: 'User does not found!'
+                        errMessage: 'Người dùng không tồn tại!'
                     });
                 }
             }
@@ -252,7 +252,7 @@ let getAllCodeService = (typeInput) => {
             if (!typeInput) {
                 resolve ({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!'
+                    errMessage: 'Thiếu dữ liệu!'
                 })
             } else {
                 let res = {};
@@ -276,14 +276,14 @@ let handleRegister = (data) => {
             if (!data.firstName || !data.lastName || !data.email || !data.password) {
                 resolve ({
                     errCode: 1,
-                    errMessage: 'Missing required parameters !'
+                    errMessage: 'Thiếu dữ liệu !'
                 })
             } else {
                 let check = await checkUserEmail(data.email);
                 if(check === true) {
                     resolve({
                         errCode: 2,
-                        errMessage: 'Email has been used. Please enter another email !'
+                        errMessage: 'Email đã được sử dụng. Vui lòng chọn email khác !'
                     });
                 } else {
                     let random_number = buildRandomNumber();
@@ -323,7 +323,7 @@ let handleConfirmRegister = (data) => {
             if (!data.email || !data.random_number) {
                 resolve ({
                     errCode: 1,
-                    errMessage: 'Missing required parameters !'
+                    errMessage: 'Thiếu dữ liệu !'
                 })
             } else {
                 let check = await db.Register.findOne({
@@ -355,7 +355,7 @@ let handleConfirmRegister = (data) => {
                 } else {
                     resolve ({
                         errCode: 2,
-                        errMessage: 'Confirmation code is incorrect !'
+                        errMessage: 'Mã xác nhận không chính xác !'
                     })
                 }
 
@@ -372,7 +372,7 @@ let handleUserInfo = (inputId) => {
             if(!inputId) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Missing required parameters!',
+                    errMessage: 'Thiếu dữ liệu!',
                 })
             } else {
                 let user = await db.User.findOne({
@@ -394,7 +394,7 @@ let handleUserInfo = (inputId) => {
                     })
                 } else {
                     resolve({
-                        errMessage: "Don't have user!",
+                        errMessage: "Người dùng không tồn tại!",
                         errCode: 2
                     })
                 }

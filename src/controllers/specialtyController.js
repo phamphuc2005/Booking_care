@@ -8,7 +8,7 @@ let createSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -21,7 +21,7 @@ let getAllSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -34,7 +34,7 @@ let editSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -47,7 +47,7 @@ let deleteSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -60,7 +60,7 @@ let unDeleteSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -73,7 +73,7 @@ let getDetailSpecialtyById = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
@@ -86,7 +86,7 @@ let handleGetTrashSpecialty = async (req, res) => {
         console.log(error);
         return res.status(200).json({
             errCode: -1,
-            errMessage: 'Error from server'
+            errMessage: 'Lỗi từ server !'
         })
     }
 }
